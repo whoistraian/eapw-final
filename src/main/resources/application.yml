@@ -9,4 +9,5 @@ spring:
             ddl-auto: create-drop
         show-sql: true
         open-in-view: false
-            
+    devtools:
+        add-properties: false
