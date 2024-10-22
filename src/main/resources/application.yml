@@ -1,0 +1,12 @@
+spring:
+    application:
+        name: eapw
+    datasource:
+        url: ${DATASOURCE_URL}
+        username: postgres
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        open-in-view: false
+            
