@@ -8,25 +8,22 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Permission")
-@Table(name = "permissions")
-public class Permission {
+@Entity(name = "AppRole")
+@Table(name = "roles")
+public class AppRole {
     @Id
     @JsonProperty("id")
-    @SequenceGenerator(name = "permissions_sequence", sequenceName = "permissions_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = SEQUENCE, generator = "permissions_sequence")
+    @SequenceGenerator(name = "roles_sequence", sequenceName = "roles_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = SEQUENCE, generator = "roles_sequence")
     @Column(name = "id", columnDefinition = "serial")
     private Long id;
 
@@ -34,11 +31,7 @@ public class Permission {
     @Column(name = "name", nullable = false, columnDefinition = "text")
     private String name;
 
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles;
-
-    public Permission(String name, Set<Role> roles) {
+    public AppRole(String name) {
         this.name = name;
-        this.roles = roles;
     }
 }

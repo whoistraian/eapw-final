@@ -7,5 +7,5 @@ import ro.traian.eapw.entity.AppUser;
 
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-
+    AppUser findByEmail(String email);
 }

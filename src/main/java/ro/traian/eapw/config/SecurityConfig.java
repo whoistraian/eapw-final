@@ -23,7 +23,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder,
+    AuthenticationManager authenticationManager(HttpSecurity http,
+            BCryptPasswordEncoder bCryptPasswordEncoder,
             UserDetailsService userDetailsService) throws Exception {
         AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
@@ -39,11 +40,10 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api/v1/auth/**").permitAll()
                                 .anyRequest()
-                                .denyAll())
+                                .permitAll())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

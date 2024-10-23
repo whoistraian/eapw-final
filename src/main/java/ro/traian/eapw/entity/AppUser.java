@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ro.traian.eapw.dao.AppUserSave;
 
 @Data
 @NoArgsConstructor
@@ -39,16 +40,16 @@ public class AppUser {
 
     @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Role role;
+    private AppRole role;
 
     public AppUser(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public AppUser(String email, String password, Role role) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
+    public static AppUser fromAppUserSave(AppUserSave appUserSave) {
+        return new AppUser(
+                appUserSave.getEmail(),
+                appUserSave.getPassword());
     }
 }
