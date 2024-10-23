@@ -1,10 +1,16 @@
 package ro.traian.eapw.service.appuser;
 
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import ro.traian.eapw.dao.appuser.AppUserRequest;
+import ro.traian.eapw.dao.appuser.AppUserResponse;
+import ro.traian.eapw.dao.appuser.CreateAppUserRequest;
+import ro.traian.eapw.dao.appuser.UpdateAppUserRequest;
 import ro.traian.eapw.entity.AppUser;
 import ro.traian.eapw.repository.AppUserRepository;
 
@@ -12,32 +18,57 @@ import ro.traian.eapw.repository.AppUserRepository;
 @AllArgsConstructor
 public class AppUserServiceImpl implements IAppUserService {
     private final AppUserRepository appUserRepository;
+    private final BCryptPasswordEncoder bCryptpasswordEncoder;
 
     @Override
-    public List<AppUser> findAll() {
-        return appUserRepository.findAll();
+    public Set<AppUserResponse> findAllAppUsers() {
+        List<AppUser> appUsers = appUserRepository.findAll();
+        return AppUserResponse.fromAppUsers(appUsers);
     }
 
     @Override
-    public AppUser findById(Long id) {
-        return appUserRepository
-                .findById(id)
-                .orElseThrow();
+    public AppUserResponse findAppUserById(AppUserRequest appUserRequest) {
+        AppUser appUser = appUserRepository
+                .findById(appUserRequest.id())
+                .orElseThrow(() -> new IllegalArgumentException("AppUser not found"));
+
+        return AppUserResponse.fromAppUser(appUser);
     }
 
     @Override
-    public AppUser createAppUser(AppUser appUser) {
-        return appUserRepository.save(appUser);
+    public AppUserResponse saveAppUser(CreateAppUserRequest createAppUserRequest) {
+        String encodedPassword = bCryptpasswordEncoder.encode(createAppUserRequest.password());
+
+        AppUser appUser = new AppUser(
+                createAppUserRequest.email(),
+                encodedPassword);
+
+        AppUser newAppUser = appUserRepository.save(appUser);
+        return AppUserResponse.fromAppUser(newAppUser);
     }
 
     @Override
-    public AppUser updateAppUser(AppUser appUser) {
-        return appUserRepository.save(appUser);
+    public AppUserResponse updateAppUser(AppUserRequest appUserRequest, UpdateAppUserRequest updateAppUserRequest) {
+        AppUser appUser = appUserRepository
+                .findById(appUserRequest.id())
+                .orElseThrow(() -> new IllegalArgumentException("AppUser not found"));
+
+        updateAppUserRequest.email().ifPresent(appUser::setEmail);
+        updateAppUserRequest.password()
+                .ifPresent(password -> appUser.setPassword(bCryptpasswordEncoder.encode(password)));
+        updateAppUserRequest.role().ifPresent(appUser::setRole);
+
+        AppUser updatedAppUser = appUserRepository.save(appUser);
+        return AppUserResponse.fromAppUser(updatedAppUser);
     }
 
     @Override
-    public boolean deleteAppUser(Long id) {
-        appUserRepository.deleteById(id);
+    public boolean deleteAppUser(AppUserRequest appUserRequest) {
+        AppUser appUser = appUserRepository
+                .findById(appUserRequest.id())
+                .orElseThrow(() -> new IllegalArgumentException("AppUser not found"));
+
+        appUserRepository.delete(appUser);
         return true;
     }
 }

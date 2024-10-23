@@ -2,10 +2,11 @@ package ro.traian.eapw.service.auth;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import ro.traian.eapw.entity.AppUser;
+import ro.traian.eapw.dao.auth.AuthRequest;
+import ro.traian.eapw.dao.auth.AuthResponse;
 
 public interface IAuthService extends UserDetailsService {
-    void signup(AppUser appUser);
+    AuthResponse signup(AuthRequest authRequest);
 
-    void signin(AppUser appUser);
+    AuthResponse signin(AuthRequest authRequest);
 }

@@ -1,17 +1,20 @@
 package ro.traian.eapw.service.appuser;
 
-import java.util.List;
+import java.util.Set;
 
-import ro.traian.eapw.entity.AppUser;
+import ro.traian.eapw.dao.appuser.AppUserRequest;
+import ro.traian.eapw.dao.appuser.AppUserResponse;
+import ro.traian.eapw.dao.appuser.CreateAppUserRequest;
+import ro.traian.eapw.dao.appuser.UpdateAppUserRequest;
 
 public interface IAppUserService {
-    List<AppUser> findAll();
+    Set<AppUserResponse> findAllAppUsers();
 
-    AppUser findById(Long id);
+    AppUserResponse findAppUserById(AppUserRequest appUserRequest);
 
-    AppUser createAppUser(AppUser appUser);
+    AppUserResponse saveAppUser(CreateAppUserRequest createAppUserRequest);
 
-    AppUser updateAppUser(AppUser appUser);
+    AppUserResponse updateAppUser(AppUserRequest appUserRequest, UpdateAppUserRequest updateAppUserRequest);
 
-    boolean deleteAppUser(Long id);
+    boolean deleteAppUser(AppUserRequest appUserRequest);
 }
