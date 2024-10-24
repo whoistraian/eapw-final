@@ -1,5 +1,6 @@
 package ro.traian.eapw.service.approle;
 
+import ro.traian.eapw.dao.approle.AppRoleSave;
 import ro.traian.eapw.entity.AppRole;
 
 public interface IAppRoleService {
@@ -7,5 +8,5 @@ public interface IAppRoleService {
 
     AppRole findByName(String name);
 
-    AppRole save(AppRole appRole);
+    AppRole save(AppRoleSave appRole);
 }

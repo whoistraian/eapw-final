@@ -1,4 +1,4 @@
-package ro.traian.eapw.dao;
+package ro.traian.eapw.dao.appuser;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,4 +1,4 @@
-package ro.traian.eapw.dao;
+package ro.traian.eapw.dao.appuser;
 
 import java.util.Optional;
 

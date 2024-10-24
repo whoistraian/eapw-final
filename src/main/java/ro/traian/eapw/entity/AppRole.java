@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ro.traian.eapw.dao.approle.AppRoleSave;
 
 @Data
 @NoArgsConstructor
@@ -36,6 +37,10 @@ public class AppRole implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return this.name;
+    }
+
+    public static AppRole fromAppRoleSave(AppRoleSave appRoleSave) {
+        return new AppRole(appRoleSave.getName());
     }
 
     public AppRole(String name) {

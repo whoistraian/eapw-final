@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import ro.traian.eapw.dao.AppUserSave;
-import ro.traian.eapw.dao.AppUserUpdate;
+import ro.traian.eapw.dao.appuser.AppUserSave;
+import ro.traian.eapw.dao.appuser.AppUserUpdate;
 import ro.traian.eapw.entity.AppUser;
 
 public interface IAppUserService extends UserDetailsService {

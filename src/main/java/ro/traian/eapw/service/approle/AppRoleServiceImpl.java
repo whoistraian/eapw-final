@@ -3,6 +3,7 @@ package ro.traian.eapw.service.approle;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import ro.traian.eapw.dao.approle.AppRoleSave;
 import ro.traian.eapw.entity.AppRole;
 import ro.traian.eapw.repository.AppRoleRepository;
 
@@ -26,7 +27,7 @@ public class AppRoleServiceImpl implements IAppRoleService {
     }
 
     @Override
-    public AppRole save(AppRole appRole) {
+    public AppRole save(AppRoleSave appRole) {
         try {
             this.findByName(appRole.getName());
             throw new IllegalStateException("Role already exists");
@@ -34,7 +35,8 @@ public class AppRoleServiceImpl implements IAppRoleService {
             //
         }
 
-        return appRoleRepository.save(appRole);
+        AppRole newAppRole = AppRole.fromAppRoleSave(appRole);
+        return appRoleRepository.save(newAppRole);
     }
 
 }

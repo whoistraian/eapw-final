@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
-import ro.traian.eapw.dao.AppUserSave;
-import ro.traian.eapw.dao.AppUserUpdate;
+import ro.traian.eapw.dao.appuser.AppUserSave;
+import ro.traian.eapw.dao.appuser.AppUserUpdate;
 import ro.traian.eapw.entity.AppUser;
 import ro.traian.eapw.service.appuser.IAppUserService;
 

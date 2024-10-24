@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
-import ro.traian.eapw.dao.AppUserSave;
-import ro.traian.eapw.dao.AppUserUpdate;
+import ro.traian.eapw.dao.appuser.AppUserSave;
+import ro.traian.eapw.dao.appuser.AppUserUpdate;
 import ro.traian.eapw.entity.AppRole;
 import ro.traian.eapw.entity.AppUser;
 import ro.traian.eapw.repository.AppUserRepository;

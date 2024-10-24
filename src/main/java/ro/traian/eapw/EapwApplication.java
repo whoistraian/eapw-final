@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 
 import lombok.AllArgsConstructor;
 import ro.traian.eapw.constant.AppRoleConstant;
-import ro.traian.eapw.entity.AppRole;
+import ro.traian.eapw.dao.approle.AppRoleSave;
 import ro.traian.eapw.service.approle.IAppRoleService;
 
 @SpringBootApplication
@@ -28,10 +28,8 @@ public class EapwApplication {
 					//
 				}
 
-				AppRole appRole = new AppRole();
-				appRole.setName(appRoleConstant.name());
-
-				appRoleService.save(appRole);
+				AppRoleSave appRoleSave = new AppRoleSave(appRoleConstant.name());
+				appRoleService.save(appRoleSave);
 			}
 		};
 	}

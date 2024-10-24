@@ -17,7 +17,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import ro.traian.eapw.dao.LoginRequest;
+import ro.traian.eapw.dao.auth.LoginRequest;
 
 @RestController
 @AllArgsConstructor

@@ -22,7 +22,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ro.traian.eapw.dao.AppUserSave;
+import ro.traian.eapw.dao.appuser.AppUserSave;
 
 @Data
 @NoArgsConstructor
