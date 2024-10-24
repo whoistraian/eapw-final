@@ -15,13 +15,13 @@ import lombok.AllArgsConstructor;
 import ro.traian.eapw.dao.AppUserSave;
 import ro.traian.eapw.dao.AppUserUpdate;
 import ro.traian.eapw.entity.AppUser;
-import ro.traian.eapw.service.appuser.AppUserServiceImpl;
+import ro.traian.eapw.service.appuser.IAppUserService;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class AppUserController {
-    private final AppUserServiceImpl appUserService;
+    private final IAppUserService appUserService;
 
     @GetMapping("/users")
     public Set<AppUser> findAppUsers() {

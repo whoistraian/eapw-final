@@ -2,11 +2,13 @@ package ro.traian.eapw.service.appuser;
 
 import java.util.Set;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import ro.traian.eapw.dao.AppUserSave;
 import ro.traian.eapw.dao.AppUserUpdate;
 import ro.traian.eapw.entity.AppUser;
 
-public interface IAppUserService {
+public interface IAppUserService extends UserDetailsService {
     Set<AppUser> findAll();
 
     AppUser findById(Long id);

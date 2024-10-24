@@ -1,7 +1,7 @@
 package ro.traian.eapw.service.auth;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.AuthenticationProvider;
 
-public interface IAuthService extends UserDetailsService {
+public interface IAuthService extends AuthenticationProvider {
 
 }

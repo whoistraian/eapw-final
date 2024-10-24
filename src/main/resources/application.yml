@@ -9,5 +9,16 @@ spring:
             ddl-auto: update
         show-sql: true
         open-in-view: false
+        properties:
+            hibernate:
+                format_sql: true
+    session:
+        jdbc:
+            initialize-schema: always
     devtools:
         add-properties: false
+
+server:
+    servlet:
+        session:
+            timeout: 180m

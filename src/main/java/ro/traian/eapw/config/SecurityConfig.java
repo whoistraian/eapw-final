@@ -8,43 +8,54 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+
+import lombok.AllArgsConstructor;
+import ro.traian.eapw.service.auth.IAuthService;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
-    @Bean
-    BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        AuthenticationManager authenticationManager(HttpSecurity http,
+                        PasswordEncoder passwordEncoder,
+                        IAuthService authService) throws Exception {
+                AuthenticationManagerBuilder authManagerBuilder = http
+                                .getSharedObject(AuthenticationManagerBuilder.class);
 
-    @Bean
-    AuthenticationManager authenticationManager(HttpSecurity http,
-            BCryptPasswordEncoder bCryptPasswordEncoder,
-            UserDetailsService userDetailsService) throws Exception {
-        AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+                authManagerBuilder
+                                .authenticationProvider(authService);
 
-        authManagerBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(bCryptPasswordEncoder);
+                return authManagerBuilder.build();
+        }
 
-        return authManagerBuilder.build();
-    }
+        @Bean
+        SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                                .anyRequest()
-                                .permitAll())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                http.csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(
+                                                (request) -> {
+                                                        request.anyRequest().permitAll();
+                                                })
+                                .securityContext((context) -> context
+                                                .securityContextRepository(securityContextRepository))
+                                .sessionManagement(
+                                                (session) -> {
+                                                        session.maximumSessions(1).maxSessionsPreventsLogin(true);
+                                                        session.sessionFixation(
+                                                                        SessionManagementConfigurer.SessionFixationConfigurer::newSession);
+                                                        session.sessionCreationPolicy(
+                                                                        SessionCreationPolicy.IF_REQUIRED);
+                                                });
 
-        return http.build();
-    }
+                return http.build();
+        }
 }

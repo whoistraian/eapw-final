@@ -2,7 +2,10 @@ package ro.traian.eapw.service.appuser;
 
 import java.util.Set;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -11,7 +14,7 @@ import ro.traian.eapw.dao.AppUserUpdate;
 import ro.traian.eapw.entity.AppRole;
 import ro.traian.eapw.entity.AppUser;
 import ro.traian.eapw.repository.AppUserRepository;
-import ro.traian.eapw.service.approle.AppRoleServiceImpl;
+import ro.traian.eapw.service.approle.IAppRoleService;
 
 import java.util.stream.Collectors;
 
@@ -19,8 +22,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AppUserServiceImpl implements IAppUserService {
     private final AppUserRepository appUserRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final AppRoleServiceImpl appRoleService;
+    private final PasswordEncoder passwordEncoder;
+    private final IAppRoleService appRoleService;
 
     @Override
     public Set<AppUser> findAll() {
@@ -98,5 +101,15 @@ public class AppUserServiceImpl implements IAppUserService {
 
         appUserRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        AppUser user = this.findByEmail(email);
+
+        return new User(
+                user.getUsername(),
+                user.getPassword(),
+                user.getAuthorities());
     }
 }

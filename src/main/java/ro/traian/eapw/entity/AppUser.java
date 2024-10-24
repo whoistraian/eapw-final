@@ -2,6 +2,13 @@ package ro.traian.eapw.entity;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -22,7 +29,7 @@ import ro.traian.eapw.dao.AppUserSave;
 @AllArgsConstructor
 @Entity(name = "AppUser")
 @Table(name = "users")
-public class AppUser {
+public class AppUser implements UserDetails {
     @Id
     @JsonProperty("id")
     @SequenceGenerator(name = "users_sequence", sequenceName = "users_sequence", allocationSize = 1)
@@ -45,6 +52,18 @@ public class AppUser {
     public AppUser(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(() -> this.role.getName());
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUsername() {
+        return this.email;
     }
 
     public static AppUser fromAppUserSave(AppUserSave appUserSave) {
