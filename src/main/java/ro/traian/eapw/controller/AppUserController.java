@@ -29,8 +29,8 @@ public class AppUserController {
     }
 
     @GetMapping("/user/{id}")
-    public AppUser findAppUser(@PathVariable Long id) {
-        return appUserService.find(id);
+    public AppUser findAppUserById(@PathVariable Long id) {
+        return appUserService.findById(id);
     }
 
     @PostMapping("/user")

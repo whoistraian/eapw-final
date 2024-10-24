@@ -20,7 +20,7 @@ import ro.traian.eapw.dao.AppUserSave;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "User")
+@Entity(name = "AppUser")
 @Table(name = "users")
 public class AppUser {
     @Id

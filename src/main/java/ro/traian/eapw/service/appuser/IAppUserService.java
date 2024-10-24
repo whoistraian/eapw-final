@@ -9,7 +9,9 @@ import ro.traian.eapw.entity.AppUser;
 public interface IAppUserService {
     Set<AppUser> findAll();
 
-    AppUser find(Long id);
+    AppUser findById(Long id);
+
+    AppUser findByEmail(String email);
 
     AppUser save(AppUserSave appUserSave);
 

@@ -11,7 +11,7 @@ import ro.traian.eapw.dao.AppUserUpdate;
 import ro.traian.eapw.entity.AppRole;
 import ro.traian.eapw.entity.AppUser;
 import ro.traian.eapw.repository.AppUserRepository;
-import ro.traian.eapw.repository.AppRoleRepository;
+import ro.traian.eapw.service.approle.AppRoleServiceImpl;
 
 import java.util.stream.Collectors;
 
@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AppUserServiceImpl implements IAppUserService {
     private final AppUserRepository appUserRepository;
-    private final AppRoleRepository appRoleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AppRoleServiceImpl appRoleService;
 
     @Override
     public Set<AppUser> findAll() {
@@ -31,28 +31,34 @@ public class AppUserServiceImpl implements IAppUserService {
     }
 
     @Override
-    public AppUser find(Long id) {
+    public AppUser findById(Long id) {
         return appUserRepository
                 .findById(id)
                 .orElseThrow(() -> new IllegalStateException("User with id " + id + " not found"));
     }
 
     @Override
-    public AppUser save(AppUserSave appUserSave) {
-        AppUser myAppUser = appUserRepository.findByEmail(appUserSave.getEmail());
+    public AppUser findByEmail(String email) {
+        return appUserRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User with email " + email + " not found"));
+    }
 
-        if (myAppUser != null) {
+    @Override
+    public AppUser save(AppUserSave appUserSave) {
+        try {
+            this.findByEmail(appUserSave.getEmail());
             throw new IllegalStateException("Email already taken");
+        } catch (IllegalStateException e) {
+            //
         }
 
         String encodedPassword = passwordEncoder.encode(appUserSave.getPassword());
         appUserSave.setPassword(encodedPassword);
 
         AppUser newAppUser = AppUser.fromAppUserSave(appUserSave);
-        AppRole appRole = appRoleRepository.findById(appUserSave.getRoleId())
-                .orElseThrow(
-                        () -> new IllegalStateException("App Role with id " + appUserSave.getRoleId() + " not found"));
 
+        AppRole appRole = appRoleService.findById(appUserSave.getRoleId());
         newAppUser.setRole(appRole);
 
         return appUserRepository.save(newAppUser);
@@ -60,13 +66,14 @@ public class AppUserServiceImpl implements IAppUserService {
 
     @Override
     public AppUser update(Long id, AppUserUpdate appUserUpdate) {
-        AppUser myAppUser = this.find(id);
+        AppUser myAppUser = this.findById(id);
 
         appUserUpdate.getEmail().ifPresent(email -> {
-            AppUser appUser = appUserRepository.findByEmail(email);
-
-            if (appUser != null) {
+            try {
+                this.findByEmail(email);
                 throw new IllegalStateException("Email already taken");
+            } catch (IllegalStateException e) {
+                //
             }
 
             myAppUser.setEmail(email);
@@ -78,10 +85,7 @@ public class AppUserServiceImpl implements IAppUserService {
         });
 
         appUserUpdate.getRoleId().ifPresent(roleId -> {
-            AppRole appRole = appRoleRepository.findById(roleId)
-                    .orElseThrow(
-                            () -> new IllegalStateException("App Role with id " + roleId + " not found"));
-
+            AppRole appRole = appRoleService.findById(roleId);
             myAppUser.setRole(appRole);
         });
 
@@ -90,7 +94,7 @@ public class AppUserServiceImpl implements IAppUserService {
 
     @Override
     public boolean delete(Long id) {
-        this.find(id);
+        this.findById(id);
 
         appUserRepository.deleteById(id);
         return true;
