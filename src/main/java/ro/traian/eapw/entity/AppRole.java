@@ -2,6 +2,8 @@ package ro.traian.eapw.entity;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -19,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "AppRole")
 @Table(name = "roles")
-public class AppRole {
+public class AppRole implements GrantedAuthority {
     @Id
     @JsonProperty("id")
     @SequenceGenerator(name = "roles_sequence", sequenceName = "roles_sequence", allocationSize = 1)
@@ -28,10 +30,16 @@ public class AppRole {
     private Long id;
 
     @JsonProperty("name")
-    @Column(name = "name", nullable = false, columnDefinition = "text")
+    @Column(name = "name", nullable = false, unique = true, columnDefinition = "text")
     private String name;
+
+    @Override
+    public String getAuthority() {
+        return this.name;
+    }
 
     public AppRole(String name) {
         this.name = name;
     }
+
 }

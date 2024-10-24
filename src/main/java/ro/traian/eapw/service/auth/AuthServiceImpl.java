@@ -28,7 +28,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new BadCredentialsException("Invalid username or password");
         }
 
-        return new UsernamePasswordAuthenticationToken(email, password, authentication.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(email, password, userDetails.getAuthorities());
     }
 
     @Override

@@ -12,8 +12,10 @@ import org.springframework.security.config.annotation.web.configurers.SessionMan
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 import lombok.AllArgsConstructor;
 import ro.traian.eapw.service.auth.IAuthService;
@@ -41,10 +43,6 @@ public class SecurityConfig {
                 SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
                 http.csrf(AbstractHttpConfigurer::disable)
-                                .authorizeHttpRequests(
-                                                (request) -> {
-                                                        request.anyRequest().permitAll();
-                                                })
                                 .securityContext((context) -> context
                                                 .securityContextRepository(securityContextRepository))
                                 .sessionManagement(
@@ -54,7 +52,15 @@ public class SecurityConfig {
                                                                         SessionManagementConfigurer.SessionFixationConfigurer::newSession);
                                                         session.sessionCreationPolicy(
                                                                         SessionCreationPolicy.IF_REQUIRED);
-                                                });
+                                                })
+                                .logout((logout) -> {
+                                        logout.logoutUrl("/api/auth/logout");
+                                        logout.addLogoutHandler(
+                                                        new HeaderWriterLogoutHandler(
+                                                                        new ClearSiteDataHeaderWriter(
+                                                                                        ClearSiteDataHeaderWriter.Directive.COOKIES)));
+                                        logout.deleteCookies("JSESSIONID");
+                                });
 
                 return http.build();
         }

@@ -6,4 +6,6 @@ public interface IAppRoleService {
     AppRole findById(Long id);
 
     AppRole findByName(String name);
+
+    AppRole save(AppRole appRole);
 }

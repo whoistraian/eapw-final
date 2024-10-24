@@ -25,4 +25,16 @@ public class AppRoleServiceImpl implements IAppRoleService {
                 .orElseThrow(() -> new IllegalStateException("Role with name " + name + " not found"));
     }
 
+    @Override
+    public AppRole save(AppRole appRole) {
+        try {
+            this.findByName(appRole.getName());
+            throw new IllegalStateException("Role already exists");
+        } catch (IllegalStateException e) {
+            //
+        }
+
+        return appRoleRepository.save(appRole);
+    }
+
 }

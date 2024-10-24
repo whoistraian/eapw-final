@@ -57,7 +57,7 @@ public class AppUser implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(() -> this.role.getName());
+        return Collections.singletonList(() -> this.role.getAuthority());
     }
 
     @Override

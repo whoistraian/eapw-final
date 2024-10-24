@@ -1,7 +1,5 @@
 package ro.traian.eapw.dao;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppUserSave {
+public class LoginRequest {
     private String email;
     private String password;
-    @JsonProperty("role_id")
-    private Long roleId;
 }
