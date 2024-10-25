@@ -18,11 +18,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import ro.traian.eapw.dao.auth.LoginRequest;
+import ro.traian.eapw.dao.auth.RegisterRequest;
+import ro.traian.eapw.entity.AppUser;
+import ro.traian.eapw.service.auth.IAuthService;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+        private final IAuthService authService;
         private final AuthenticationManager authenticationManager;
         private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
         private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
@@ -36,7 +40,8 @@ public class AuthController {
                         HttpServletResponse response) {
                 UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken
                                 .unauthenticated(
-                                                loginRequest.getEmail(), loginRequest.getPassword());
+                                                loginRequest.getEmail(),
+                                                loginRequest.getPassword());
 
                 Authentication authentication = authenticationManager.authenticate(token);
                 SecurityContext context = securityContextHolderStrategy.createEmptyContext();
@@ -45,5 +50,11 @@ public class AuthController {
                 securityContextHolderStrategy.setContext(context);
 
                 securityContextRepository.saveContext(context, request, response);
+        }
+
+        @PermitAll
+        @PostMapping("/register")
+        public AppUser register(@RequestBody RegisterRequest registerRequest) {
+                return authService.register(registerRequest);
         }
 }
