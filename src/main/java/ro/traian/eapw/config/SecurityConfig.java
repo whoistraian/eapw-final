@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
@@ -41,6 +42,7 @@ public class SecurityConfig {
         @Bean
         SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+                HttpStatusReturningLogoutSuccessHandler httpStatusReturningLogoutSuccessHandler = new HttpStatusReturningLogoutSuccessHandler();
 
                 http.csrf(AbstractHttpConfigurer::disable)
                                 .securityContext((context) -> context
@@ -60,6 +62,7 @@ public class SecurityConfig {
                                                                         new ClearSiteDataHeaderWriter(
                                                                                         ClearSiteDataHeaderWriter.Directive.COOKIES)));
                                         logout.deleteCookies("JSESSIONID");
+                                        logout.logoutSuccessHandler(httpStatusReturningLogoutSuccessHandler);
                                 });
 
                 return http.build();
