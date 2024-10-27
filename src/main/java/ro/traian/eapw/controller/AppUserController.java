@@ -47,7 +47,7 @@ public class AppUserController {
     public AppUser updateUser(
             @PathVariable Long id,
             @RequestBody AppUserUpdate appUserUpdate) {
-        return appUserService.update(id, appUserUpdate);
+        return appUserService.updateAndDestroySessions(id, appUserUpdate);
     }
 
     @DeleteMapping("/user/{id}")

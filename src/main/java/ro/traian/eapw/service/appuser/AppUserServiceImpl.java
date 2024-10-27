@@ -95,6 +95,18 @@ public class AppUserServiceImpl implements IAppUserService {
     }
 
     @Override
+    public AppUser updateAndDestroySessions(Long id, AppUserUpdate appUserUpdate) {
+        AppUser appUser = this.update(id, appUserUpdate);
+
+        sessionService.findByPrincipalName(appUser.getEmail())
+                .forEach(session -> {
+                    sessionService.delete(session.getId());
+                });
+
+        return appUser;
+    }
+
+    @Override
     public boolean delete(Long id) {
         AppUser appUser = this.findById(id);
 
@@ -107,4 +119,5 @@ public class AppUserServiceImpl implements IAppUserService {
 
         return true;
     }
+
 }

@@ -17,5 +17,7 @@ public interface IAppUserService {
 
     AppUser update(Long id, AppUserUpdate appUserUpdate);
 
+    AppUser updateAndDestroySessions(Long id, AppUserUpdate appUserUpdate);
+
     boolean delete(Long id);
 }
