@@ -2,6 +2,7 @@ package ro.traian.eapw.controller;
 
 import java.util.Set;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,33 +27,38 @@ public class AppUserController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public Set<AppUser> findAppUsers() {
-        return appUserService.findAll();
+    public ResponseEntity<Set<AppUser>> findAppUsers() {
+        Set<AppUser> appUsers = appUserService.findAll();
+        return ResponseEntity.ok(appUsers);
     }
 
     @GetMapping("/user/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public AppUser findAppUserById(@PathVariable Long id) {
-        return appUserService.findById(id);
+    public ResponseEntity<AppUser> findAppUserById(@PathVariable Long id) {
+        AppUser appUser = appUserService.findById(id);
+        return ResponseEntity.ok(appUser);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public AppUser saveUser(@RequestBody AppUserSave appUserSave) {
-        return appUserService.save(appUserSave);
+    public ResponseEntity<AppUser> saveUser(@RequestBody AppUserSave appUserSave) {
+        AppUser appUser = appUserService.save(appUserSave);
+        return ResponseEntity.ok(appUser);
     }
 
     @PatchMapping("/user/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public AppUser updateUser(
+    public ResponseEntity<AppUser> updateUser(
             @PathVariable Long id,
             @RequestBody AppUserUpdate appUserUpdate) {
-        return appUserService.updateAndDestroySessions(id, appUserUpdate);
+        AppUser appUser = appUserService.update(id, appUserUpdate);
+        return ResponseEntity.ok(appUser);
     }
 
     @DeleteMapping("/user/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public boolean deleteUser(@PathVariable Long id) {
-        return appUserService.delete(id);
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
+        boolean result = appUserService.delete(id);
+        return ResponseEntity.ok(result);
     }
 }

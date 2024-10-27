@@ -15,6 +15,7 @@ import ro.traian.eapw.service.approle.IAppRoleService;
 import ro.traian.eapw.service.session.ISessionService;
 
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -70,26 +71,35 @@ public class AppUserServiceImpl implements IAppUserService {
     public AppUser update(Long id, AppUserUpdate appUserUpdate) {
         AppUser myAppUser = this.findById(id);
 
-        appUserUpdate.getEmail().ifPresent(email -> {
-            try {
-                this.findByEmail(email);
-                throw new IllegalStateException("Email already taken");
-            } catch (IllegalStateException e) {
-                //
-            }
+        Optional.ofNullable(appUserUpdate.getEmail())
+                .ifPresent(email -> {
+                    email.ifPresent(nullableEmail -> {
+                        try {
+                            this.findByEmail(nullableEmail);
+                            throw new IllegalStateException("Email already taken");
+                        } catch (IllegalStateException e) {
+                            //
+                        }
 
-            myAppUser.setEmail(email);
-        });
+                        myAppUser.setEmail(nullableEmail);
+                    });
+                });
 
-        appUserUpdate.getPassword().ifPresent(password -> {
-            String encodedPassword = passwordEncoder.encode(password);
-            myAppUser.setPassword(encodedPassword);
-        });
+        Optional.ofNullable(appUserUpdate.getPassword())
+                .ifPresent(password -> {
+                    password.ifPresent(nullablePassword -> {
+                        String encodedPassword = passwordEncoder.encode(nullablePassword);
+                        myAppUser.setPassword(encodedPassword);
+                    });
+                });
 
-        appUserUpdate.getRoleId().ifPresent(roleId -> {
-            AppRole appRole = appRoleService.findById(roleId);
-            myAppUser.setRole(appRole);
-        });
+        Optional.ofNullable(appUserUpdate.getRoleId())
+                .ifPresent(roleId -> {
+                    roleId.ifPresent(nullableRoleId -> {
+                        AppRole appRole = appRoleService.findById(nullableRoleId);
+                        myAppUser.setRole(appRole);
+                    });
+                });
 
         return appUserRepository.save(myAppUser);
     }

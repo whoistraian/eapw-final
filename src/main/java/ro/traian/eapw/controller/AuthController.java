@@ -1,5 +1,6 @@
 package ro.traian.eapw.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,7 @@ public class AuthController {
 
         @PermitAll
         @PostMapping("/login")
-        public void login(
+        public ResponseEntity<Boolean> login(
                         @RequestBody LoginRequest loginRequest,
                         HttpServletRequest request,
                         HttpServletResponse response) {
@@ -50,11 +51,14 @@ public class AuthController {
                 securityContextHolderStrategy.setContext(context);
 
                 securityContextRepository.saveContext(context, request, response);
+
+                return ResponseEntity.ok(true);
         }
 
         @PermitAll
         @PostMapping("/register")
-        public AppUser register(@RequestBody RegisterRequest registerRequest) {
-                return authService.register(registerRequest);
+        public ResponseEntity<AppUser> register(@RequestBody RegisterRequest registerRequest) {
+                AppUser appUser = authService.register(registerRequest);
+                return ResponseEntity.ok(appUser);
         }
 }
