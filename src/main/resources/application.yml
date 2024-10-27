@@ -13,6 +13,7 @@ spring:
             hibernate:
                 format_sql: true
     session:
+        timeout: 24h
         jdbc:
             initialize-schema: always
     devtools:
@@ -21,4 +22,13 @@ spring:
 server:
     servlet:
         session:
-            timeout: 180m
+            timeout: 24h
+            tracking-modes: cookie
+            cookie:
+                http-only: true
+                secure: false
+                name: JSESSIONID
+                domain: localhost
+                path: /
+                max-age: 600
+                same-site: strict
