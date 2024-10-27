@@ -15,6 +15,7 @@ import ro.traian.eapw.entity.AppRole;
 import ro.traian.eapw.entity.AppUser;
 import ro.traian.eapw.repository.AppUserRepository;
 import ro.traian.eapw.service.approle.IAppRoleService;
+import ro.traian.eapw.service.session.ISessionService;
 
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class AppUserServiceImpl implements IAppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final IAppRoleService appRoleService;
+    private final ISessionService sessionService;
 
     @Override
     public Set<AppUser> findAll() {
@@ -97,9 +99,15 @@ public class AppUserServiceImpl implements IAppUserService {
 
     @Override
     public boolean delete(Long id) {
-        this.findById(id);
+        AppUser appUser = this.findById(id);
+
+        sessionService.findByPrincipalName(appUser.getEmail())
+                .forEach(session -> {
+                    sessionService.delete(session.getId());
+                });
 
         appUserRepository.deleteById(id);
+
         return true;
     }
 

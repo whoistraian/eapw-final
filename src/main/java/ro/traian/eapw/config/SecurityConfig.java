@@ -49,7 +49,6 @@ public class SecurityConfig {
                                                 .securityContextRepository(securityContextRepository))
                                 .sessionManagement(
                                                 (session) -> {
-                                                        session.maximumSessions(1).maxSessionsPreventsLogin(true);
                                                         session.sessionFixation(
                                                                         SessionManagementConfigurer.SessionFixationConfigurer::newSession);
                                                         session.sessionCreationPolicy(
