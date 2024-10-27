@@ -3,6 +3,7 @@ package ro.traian.eapw.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +20,6 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 import lombok.AllArgsConstructor;
-import ro.traian.eapw.service.auth.IAuthService;
 
 @Configuration
 @EnableWebSecurity
@@ -29,12 +29,12 @@ public class SecurityConfig {
         @Bean
         AuthenticationManager authenticationManager(HttpSecurity http,
                         PasswordEncoder passwordEncoder,
-                        IAuthService authService) throws Exception {
+                        AuthenticationProvider authenticationProvider) throws Exception {
                 AuthenticationManagerBuilder authManagerBuilder = http
                                 .getSharedObject(AuthenticationManagerBuilder.class);
 
                 authManagerBuilder
-                                .authenticationProvider(authService);
+                                .authenticationProvider(authenticationProvider);
 
                 return authManagerBuilder.build();
         }
